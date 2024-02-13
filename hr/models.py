@@ -1,3 +1,5 @@
+from functools import cached_property
+
 from django.contrib.auth.models import AbstractUser
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
@@ -41,6 +43,10 @@ class Position(models.Model):
     is_active = models.BooleanField(default=True)
     job_description = models.CharField(verbose_name=_('Job Description'), max_length=500, default='')
     monthly_rate = models.IntegerField(default=0)
+
+    @cached_property
+    def position_count(self):
+        return self.objects.all().count()
 
     def save(self, *args, **kwargs):
         if self.is_manager:
